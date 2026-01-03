@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Celebration Page</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle, #000428, #004e92);
+        overflow: hidden;
+    }
+
+    .container {
+        position: relative;
+        text-align: center;
+        color: white;
+        z-index: 10;
+        width: 400px;
+        height: 300px;
+    }
+
+    button {
+        padding: 12px 26px;
+        font-size: 18px;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    #noBtn {
+        position: absolute;
+    }
+
+    /* 🎈 Frosty Balloon */
+    .balloon {
+        position: fixed;
+        bottom: -120px;
+        width: 45px;
+        height: 60px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,0.4));
+        box-shadow: 0 0 20px rgba(255,255,255,0.6);
+        animation: floatUp 6s ease-in forwards;
+    }
+
+    .balloon::after {
+        content: "";
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        width: 2px;
+        height: 25px;
+        background: #ddd;
+        transform: translateX(-50%);
+    }
+
+    @keyframes floatUp {
+        to {
+            transform: translateY(-130vh);
+            opacity: 0;
+        }
+    }
+
+    /* 🎆 Firework Particle */
+    .firework {
+        position: fixed;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        animation: explode 1.2s ease-out forwards;
+    }
+
+    @keyframes explode {
+        to {
+            transform: translate(var(--x), var(--y));
+            opacity: 0;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Do you love me?</h2>
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+</div>
+
+<!-- 👏 Clapping Sound -->
+<audio id="clapSound">
+    <source src="https://www.soundjay.com/human/sounds/applause-01.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const container = document.querySelector(".container");
+    const clapSound = document.getElementById("clapSound");
+
+    // ❌ NO button escape
+    noBtn.addEventListener("mouseenter", () => {
+        const maxX = container.clientWidth - noBtn.offsetWidth;
+        const maxY = container.clientHeight - noBtn.offsetHeight;
+
+        noBtn.style.left = Math.random() * maxX + "px";
+        noBtn.style.top = Math.random() * maxY + "px";
+    });
+
+    // ✅ YES celebration
+    yesBtn.addEventListener("click", () => {
+        clapSound.play();
+        alert("🎉 Congratulation! I love you too🎉");
+
+        // Balloons
+        for (let i = 0; i < 25; i++) {
+            setTimeout(createBalloon, i * 150);
+        }
+
+        // Fireworks repeatedly
+        let fireworkInterval = setInterval(() => {
+            createFirework();
+        }, 400);
+
+        setTimeout(() => clearInterval(fireworkInterval), 4000);
+    });
+
+    // 🎈 Balloon function
+    function createBalloon() {
+        const balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.style.left = Math.random() * window.innerWidth + "px";
+        document.body.appendChild(balloon);
+
+        setTimeout(() => balloon.remove(), 6000);
+    }
+
+    // 🎆 Firework explosion
+    function createFirework() {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight * 0.5;
+
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement("div");
+            particle.className = "firework";
+            particle.style.left = x + "px";
+            particle.style.top = y + "px";
+            particle.style.backgroundColor =
+                `hsl(${Math.random() * 360}, 100%, 60%)`;
+
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 120;
+
+            particle.style.setProperty("--x", Math.cos(angle) * distance + "px");
+            particle.style.setProperty("--y", Math.sin(angle) * distance + "px");
+
+            document.body.appendChild(particle);
+
+            setTimeout(() => particle.remove(), 1200);
+        }
+    }
+</script>
+
+</body>
+</html>
